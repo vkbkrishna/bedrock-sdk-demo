@@ -6,11 +6,15 @@ import pandas as pd
 
 st.set_page_config(layout="wide")
 
-def getCall(user_query):
-     data = {
+def getUserQueryResult(user_query):
+     data_obj = {
           "prompt": user_query
      }
-     response = req.post('http://localhost:8080/ai/data/query1', json=data)
+     url = "http://localhost:8080/ai/data/query1"
+     return postCall(data_obj, url)
+
+def postCall(req_obj, url):
+     response = req.post(url, json=req_obj)
      return json.loads(response.text);
 
 # Custom CSS to reduce space above the title
@@ -29,20 +33,23 @@ def main():
     st.title("Team Sherlock - GenAI in Fraud Detection")
 
     # LLM Interaction
-    user_query = st.text_input("Enter your question:")
-    col1, col2 = st.columns(2, gap="small")
+    
+    col1, col2, col3 = st.columns([17,1,1])
     with col1:
-        send = st.button("Send", help="Run query")
+        user_query = st.text_input("Enter your question:")
     with col2:
+        send = st.button("Send", help="Run query")
+    with col3:
         clear = st.button("Clear", help="Clear")
-
-    if (len(user_query)!=0 | send) & clear!=1:
+    print(clear)
+    if (len(user_query)!=0 | send) & clear!=True:
         try:
-            llm_response = getCall(user_query)
+            llm_response = getUserQueryResult(user_query)
             #for response in llm_response:
-            data = pd.DataFrame(llm_response)
+            data_frame = pd.DataFrame(llm_response)
             st.divider()
-            st.write(data)
+            st.write(data_frame)
+            st.line_chart(data_frame,x="col1",y="col2")
             st.divider()
             #st.line_chart(data)
         except Exception as e:

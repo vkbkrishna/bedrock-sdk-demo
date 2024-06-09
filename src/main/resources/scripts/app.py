@@ -1,6 +1,6 @@
 import streamlit as st
 import requests as req
-import re
+from requests.auth import HTTPBasicAuth
 import json
 import pandas as pd
 
@@ -10,7 +10,20 @@ def getCall(user_query):
      data = {
           "prompt": user_query
      }
-     response = req.post('http://localhost:8080/ai/data/query1', json=data)
+     # Define the URL and your credentials
+     url = 'http://localhost:8080/ai/data/query1'
+     username = 'sherlock'
+     password = 'Winner@2024'
+     headers = {
+         'Content-Type': 'application/json'  # or the specific content type the server expects
+     }
+     response = req.post(url, headers=headers, auth=HTTPBasicAuth(username, password),data=json.dumps(data))
+     # Check the response
+     if response.status_code == 200:
+        print('Success!')
+     else:
+        print(f'Failed with status code: {response.status_code}')
+        print(response.text)
      return json.loads(response.text);
 
 # Custom CSS to reduce space above the title

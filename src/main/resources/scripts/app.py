@@ -34,29 +34,28 @@ def main():
 
     # LLM Interaction
     
-    col1, col2, col3 = st.columns([17,1,1])
+    col1, col2 = st.columns([17,1])
     with col1:
         user_query = st.text_input("Enter your question:")
     with col2:
-        send = st.button("Send", help="Run query")
-    with col3:
         clear = st.button("Clear", help="Clear")
-    print(clear)
-    if (len(user_query)!=0 | send) & clear!=True:
-        try:
-            llm_response = getUserQueryResult(user_query)
-            #for response in llm_response:
-            data_frame = pd.DataFrame(llm_response)
-            st.divider()
-            st.write(data_frame)
-            st.line_chart(data_frame,x="col1",y="col2")
-            st.divider()
-            #st.line_chart(data)
-        except Exception as e:
-            print(e)
-            st.error(f"Unable to run your query at this time: {e}")
-    if clear:
+    if len(user_query)!=0 and clear!=True:
+            try:
+                llm_response = getUserQueryResult(user_query)
+                #for response in llm_response:
+                data_frame = pd.DataFrame(llm_response)
+                st.divider()
+                st.write(data_frame)
+                #st.line_chart(data_frame,x="col1",y="col2")
+                st.divider()
+                #st.line_chart(data)
+            except Exception as e:
+                print(e)
+                st.error(f"Unable to run your query at this time: {e}")
+    elif clear:
         st.divider()
+    else:
+         st.divider()
 
 if __name__ == "__main__":
     main()
